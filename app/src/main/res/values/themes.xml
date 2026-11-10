@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.NFCResenas" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary_blue</item>
-        <item name="colorOnPrimary">@android:color/white</item>
+    <style name="Theme.NFCResenas" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:colorAccent">@color/primary_blue</item>
         <item name="android:statusBarColor">@color/primary_blue</item>
         <item name="android:navigationBarColor">@color/background_light</item>
         <item name="android:windowBackground">@color/background_light</item>
