@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.nfcresenas.app.data.Business
 import com.nfcresenas.app.ui.QRCodeGenerator
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusinessDetailScreen(
     business: Business,
