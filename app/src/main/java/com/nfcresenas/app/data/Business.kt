@@ -1,5 +1,6 @@
 package com.nfcresenas.app.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -13,5 +14,7 @@ data class Business(
     val googleReviewUrl: String = "",
     val phone: String = "",
     val email: String = "",
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(defaultValue = "''")
+    val logoUri: String = ""
 )
