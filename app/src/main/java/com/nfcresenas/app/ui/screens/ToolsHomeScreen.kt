@@ -20,13 +20,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Business
-import androidx.compose.material.icons.filled.ContactPhone
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Nfc
 import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.TapAndPlay
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -128,10 +124,7 @@ fun ToolsHomeScreen(
                     listOf(
                         ToolItem("Mis negocios", "Clientes y enlaces", Icons.Default.Business, Color(0xFFEAF0FF), onOpenBusinesses),
                         ToolItem("Leer / grabar NFC", "Programar tarjetas", Icons.Default.Nfc, Color(0xFFE7F8F2), onOpenNfc),
-                        ToolItem("Crear códigos QR", "Diseñar y compartir", Icons.Default.QrCode2, Color(0xFFFFF3E2), onOpenBusinesses),
-                        ToolItem("Tarjetas digitales", "Contacto y enlaces", Icons.Default.ContactPhone, Color(0xFFF2EBFF), onOpenBusinesses),
-                        ToolItem("Historial", "Tus trabajos guardados", Icons.Default.History, Color(0xFFEAF5FF), onOpenBusinesses),
-                        ToolItem("Configuración", "Preferencias", Icons.Default.Settings, Color(0xFFF0F2F6), onOpenBusinesses)
+                        ToolItem("Crear códigos QR", "Diseñar y compartir", Icons.Default.QrCode2, Color(0xFFFFF3E2), onOpenBusinesses)
                     )
                 ) { item ->
                     Card(
