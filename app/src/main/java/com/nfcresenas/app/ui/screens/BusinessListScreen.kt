@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -56,7 +57,8 @@ private val MutedText = Color(0xFF66758A)
 fun BusinessListScreen(
     businesses: List<Business>,
     onAddBusiness: () -> Unit,
-    onSelectBusiness: (Business) -> Unit
+    onSelectBusiness: (Business) -> Unit,
+    onBack: (() -> Unit)? = null
 ) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
     val filteredBusinesses = remember(businesses, searchQuery) {
