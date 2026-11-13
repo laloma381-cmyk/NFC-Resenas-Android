@@ -245,6 +245,6 @@ private fun isOptionalSocialUrlValid(value: String, allowedHosts: Set<String>): 
     if (value.isBlank()) return true
     return runCatching {
         val uri = Uri.parse(value)
-        (uri.scheme == "https" || uri.scheme == "http") && uri.host?.lowercase() in allowedHosts
+        (uri.scheme == "https" || uri.scheme == "http") && uri.host?.lowercase()?.let { it in allowedHosts } == true
     }.getOrDefault(false)
 }
