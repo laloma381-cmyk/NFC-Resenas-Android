@@ -2,6 +2,7 @@ package com.nfcresenas.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
@@ -53,6 +54,15 @@ class MainActivity : ComponentActivity() {
                 var showNfcTools by remember { mutableStateOf(false) }
                 var nfcInitialUrl by remember { mutableStateOf("https://") }
                 var showBusinesses by remember { mutableStateOf(false) }
+
+                BackHandler(enabled = showNfcTools || showBusinesses || showForm || selectedBusiness != null) {
+                    when {
+                        showNfcTools -> { showNfcTools = false; showHome = true }
+                        showForm -> { showForm = false; selectedBusiness = null }
+                        selectedBusiness != null -> selectedBusiness = null
+                        showBusinesses -> { showBusinesses = false; showHome = true }
+                    }
+                }
 
                 if (showSplash) {
                     SplashScreen { showSplash = false }
