@@ -51,12 +51,13 @@ class MainActivity : ComponentActivity() {
                 var showSplash by remember { mutableStateOf(true) }
                 var showHome by remember { mutableStateOf(true) }
                 var showNfcTools by remember { mutableStateOf(false) }
+                var nfcInitialUrl by remember { mutableStateOf("https://") }
                 var showBusinesses by remember { mutableStateOf(false) }
 
                 if (showSplash) {
                     SplashScreen { showSplash = false }
                 } else if (showNfcTools) {
-                    NfcToolsScreen(onBack = { showNfcTools = false; showHome = true })
+                    NfcToolsScreen(initialUrl = nfcInitialUrl, onBack = { showNfcTools = false; showHome = true })
                 } else if (showBusinesses && showForm) {
                     BusinessFormScreen(
                         business = selectedBusiness,
@@ -80,7 +81,12 @@ class MainActivity : ComponentActivity() {
                             viewModel.deleteBusiness(selectedBusiness!!)
                             selectedBusiness = null
                         },
-                        onUpdateBusiness = { viewModel.updateBusiness(it) }
+                        onUpdateBusiness = { viewModel.updateBusiness(it) },
+                        onProgramNfc = { url ->
+                            nfcInitialUrl = url
+                            showBusinesses = false
+                            showNfcTools = true
+                        }
                     )
                 } else if (showBusinesses) {
                     BusinessListScreen(
