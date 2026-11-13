@@ -83,9 +83,14 @@ fun BusinessDetailScreen(
     val context = LocalContext.current
     var selectedPaletteId by rememberSaveable(business.id) { mutableStateOf(business.qrPaletteId) }
     val palette = QRCodeGenerator.palettes.firstOrNull { it.id == selectedPaletteId } ?: QRCodeGenerator.palettes.first()
-    val designedQr = remember(business.googleReviewUrl, business.name, palette.id) {
+    val businessLogo = remember(business.logoUri) {
+        if (business.logoUri.isBlank()) null else runCatching {
+            context.contentResolver.openInputStream(Uri.parse(business.logoUri))?.use { BitmapFactory.decodeStream(it) }
+        }.getOrNull()
+    }
+    val designedQr = remember(business.googleReviewUrl, business.name, palette.id, business.logoUri, businessLogo) {
         business.googleReviewUrl.takeIf(String::isNotBlank)?.let {
-            QRCodeGenerator.generateDesignedQrBitmap(it, business.name, palette)
+            QRCodeGenerator.generateDesignedQrBitmap(it, business.name, palette, businessLogo)
         }
     }
     val reviewMessage = remember(business.name) { QRCodeGenerator.buildReviewMessage(business.name) }
