@@ -13,5 +13,7 @@ data class Business(
     val googleReviewUrl: String = "",
     val phone: String = "",
     val email: String = "",
+    val instagramUrl: String = "",
+    val facebookUrl: String = "",
     val createdAt: Long = System.currentTimeMillis()
 )
