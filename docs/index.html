@@ -58,7 +58,7 @@
       document.getElementById("business").textContent = name || "Enlaces del negocio";
       document.title = name ? name + " | Enlaces" : "Enlaces del negocio";
       document.getElementById("category").textContent = get("category");
-      const review = safeLink(get("review"), ["g.page","google.com","www.google.com","maps.app.goo.gl"]);
+      const review = safeLink(get("review"), ["g.page","google.com","www.google.com","search.google.com","maps.google.com","maps.app.goo.gl"]);
       const instagram = safeLink(get("instagram"), ["instagram.com","www.instagram.com"]);
       const facebook = safeLink(get("facebook"), ["facebook.com","www.facebook.com","m.facebook.com"]);
       show("review", review);
