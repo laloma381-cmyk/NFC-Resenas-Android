@@ -21,6 +21,8 @@ import com.nfcresenas.app.ui.BusinessViewModelFactory
 import com.nfcresenas.app.ui.screens.BusinessDetailScreen
 import com.nfcresenas.app.ui.screens.BusinessFormScreen
 import com.nfcresenas.app.ui.screens.BusinessListScreen
+import com.nfcresenas.app.ui.screens.NfcToolsScreen
+import com.nfcresenas.app.ui.screens.ToolsHomeScreen
 import com.nfcresenas.app.ui.theme.NFCResenasTheme
 import kotlinx.coroutines.delay
 
@@ -41,20 +43,20 @@ class MainActivity : ComponentActivity() {
                 var selectedBusiness by remember { mutableStateOf<Business?>(null) }
                 var showForm by remember { mutableStateOf(false) }
                 var showSplash by remember { mutableStateOf(true) }
+                var showHome by remember { mutableStateOf(true) }
+                var showNfcTools by remember { mutableStateOf(false) }
+                var showBusinesses by remember { mutableStateOf(false) }
 
                 if (showSplash) {
-                    SplashScreen {
-                        showSplash = false
-                    }
-                } else if (showForm) {
+                    SplashScreen { showSplash = false }
+                } else if (showNfcTools) {
+                    NfcToolsScreen(onBack = { showNfcTools = false })
+                } else if (showBusinesses && showForm) {
                     BusinessFormScreen(
                         business = selectedBusiness,
                         onSave = { business ->
-                            if (business.id == 0L) {
-                                viewModel.saveBusiness(business)
-                            } else {
-                                viewModel.updateBusiness(business)
-                            }
+                            if (business.id == 0L) viewModel.saveBusiness(business)
+                            else viewModel.updateBusiness(business)
                             showForm = false
                             selectedBusiness = null
                         },
@@ -63,7 +65,7 @@ class MainActivity : ComponentActivity() {
                             selectedBusiness = null
                         }
                     )
-                } else if (selectedBusiness != null) {
+                } else if (showBusinesses && selectedBusiness != null) {
                     BusinessDetailScreen(
                         business = selectedBusiness!!,
                         onBack = { selectedBusiness = null },
@@ -73,14 +75,26 @@ class MainActivity : ComponentActivity() {
                             selectedBusiness = null
                         }
                     )
-                } else {
+                } else if (showBusinesses) {
                     BusinessListScreen(
                         businesses = uiState.businesses,
                         onAddBusiness = {
                             selectedBusiness = null
                             showForm = true
                         },
-                        onSelectBusiness = { selectedBusiness = it }
+                        onSelectBusiness = { selectedBusiness = it },
+                        onBack = { showBusinesses = false }
+                    )
+                } else if (showHome) {
+                    ToolsHomeScreen(
+                        onOpenBusinesses = {
+                            showBusinesses = true
+                            showHome = false
+                        },
+                        onOpenNfc = {
+                            showNfcTools = true
+                            showHome = false
+                        }
                     )
                 }
             }
@@ -91,19 +105,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun SplashScreen(onSplashFinished: () -> Unit) {
     LaunchedEffect(Unit) {
-        delay(1800)
+        delay(1400)
         onSplashFinished()
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
+        modifier = Modifier.fillMaxSize().background(Color(0xFF101B36)),
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(id = R.drawable.splash_nfc_resenas),
-            contentDescription = "Logo NFC Reseñas",
+            contentDescription = "ReviewQR Manager",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
