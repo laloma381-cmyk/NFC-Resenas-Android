@@ -48,6 +48,8 @@ fun BusinessFormScreen(
     var reviewUrl by rememberSaveable(business?.id) { mutableStateOf(business?.googleReviewUrl.orEmpty()) }
     var phone by rememberSaveable(business?.id) { mutableStateOf(business?.phone.orEmpty()) }
     var email by rememberSaveable(business?.id) { mutableStateOf(business?.email.orEmpty()) }
+    var instagramUrl by rememberSaveable(business?.id) { mutableStateOf(business?.instagramUrl.orEmpty()) }
+    var facebookUrl by rememberSaveable(business?.id) { mutableStateOf(business?.facebookUrl.orEmpty()) }
     var attemptedSave by rememberSaveable(business?.id) { mutableStateOf(false) }
 
     val normalizedUrl = remember(reviewUrl) {
@@ -61,6 +63,14 @@ fun BusinessFormScreen(
             val uri = Uri.parse(normalizedUrl)
             (uri.scheme == "https" || uri.scheme == "http") && !uri.host.isNullOrBlank()
         }.getOrDefault(false)
+    }
+    val normalizedInstagramUrl = remember(instagramUrl) { normalizeSocialUrl(instagramUrl, "instagram.com") }
+    val normalizedFacebookUrl = remember(facebookUrl) { normalizeSocialUrl(facebookUrl, "facebook.com") }
+    val validInstagramUrl = remember(normalizedInstagramUrl) {
+        isOptionalSocialUrlValid(normalizedInstagramUrl, setOf("instagram.com", "www.instagram.com"))
+    }
+    val validFacebookUrl = remember(normalizedFacebookUrl) {
+        isOptionalSocialUrlValid(normalizedFacebookUrl, setOf("facebook.com", "www.facebook.com", "m.facebook.com"))
     }
 
     Scaffold(
@@ -145,27 +155,63 @@ fun BusinessFormScreen(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 shape = RoundedCornerShape(16.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Done)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next)
+            )
+
+            Text("REDES SOCIALES", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+            OutlinedTextField(
+                value = instagramUrl,
+                onValueChange = { instagramUrl = it },
+                label = { Text("Instagram") },
+                placeholder = { Text("@tunegocio o enlace del perfil") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                shape = RoundedCornerShape(16.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Next),
+                isError = attemptedSave && !validInstagramUrl,
+                supportingText = {
+                    if (attemptedSave && !validInstagramUrl) Text("Introduce un usuario o enlace válido de Instagram")
+                    else Text("Opcional. Puedes escribir @usuario o pegar el enlace.")
+                }
+            )
+            OutlinedTextField(
+                value = facebookUrl,
+                onValueChange = { facebookUrl = it },
+                label = { Text("Facebook") },
+                placeholder = { Text("Nombre de página o enlace") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                shape = RoundedCornerShape(16.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Done),
+                isError = attemptedSave && !validFacebookUrl,
+                supportingText = {
+                    if (attemptedSave && !validFacebookUrl) Text("Introduce un nombre o enlace válido de Facebook")
+                    else Text("Opcional. Puedes escribir el nombre de la página o pegar el enlace.")
+                }
             )
             Spacer(Modifier.height(4.dp))
             Button(
                 onClick = {
                     attemptedSave = true
-                    if (name.isNotBlank() && validReviewUrl) {
+                    if (name.isNotBlank() && validReviewUrl && validInstagramUrl && validFacebookUrl) {
                         val saved = business?.copy(
                             name = name.trim(),
                             category = category.trim(),
                             address = address.trim(),
                             googleReviewUrl = normalizedUrl,
                             phone = phone.trim(),
-                            email = email.trim()
+                            email = email.trim(),
+                            instagramUrl = normalizedInstagramUrl,
+                            facebookUrl = normalizedFacebookUrl
                         ) ?: Business(
                             name = name.trim(),
                             category = category.trim(),
                             address = address.trim(),
                             googleReviewUrl = normalizedUrl,
                             phone = phone.trim(),
-                            email = email.trim()
+                            email = email.trim(),
+                            instagramUrl = normalizedInstagramUrl,
+                            facebookUrl = normalizedFacebookUrl
                         )
                         onSave(saved)
                     }
@@ -185,4 +231,20 @@ fun BusinessFormScreen(
             Spacer(Modifier.height(12.dp))
         }
     }
+}
+
+private fun normalizeSocialUrl(rawValue: String, domain: String): String {
+    val value = rawValue.trim()
+    if (value.isBlank()) return ""
+    if (value.startsWith("https://", ignoreCase = true) || value.startsWith("http://", ignoreCase = true)) return value
+    val username = value.removePrefix("@").trim().trim('/')
+    return if (username.isBlank()) "" else "https://$domain/$username"
+}
+
+private fun isOptionalSocialUrlValid(value: String, allowedHosts: Set<String>): Boolean {
+    if (value.isBlank()) return true
+    return runCatching {
+        val uri = Uri.parse(value)
+        (uri.scheme == "https" || uri.scheme == "http") && uri.host?.lowercase() in allowedHosts
+    }.getOrDefault(false)
 }
