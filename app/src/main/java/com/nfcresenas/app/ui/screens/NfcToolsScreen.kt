@@ -48,11 +48,11 @@ import java.nio.charset.Charset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NfcToolsScreen(onBack: () -> Unit) {
+fun NfcToolsScreen(initialUrl: String = "https://", onBack: () -> Unit) {
     val context = LocalContext.current
     val activity = context as? Activity
     val adapter = remember { NfcAdapter.getDefaultAdapter(context) }
-    var url by remember { mutableStateOf("https://") }
+    var url by remember(initialUrl) { mutableStateOf(initialUrl) }
     var writeMode by remember { mutableStateOf(false) }
     var status by remember { mutableStateOf("Acerca una tarjeta o etiqueta NFC al teléfono.") }
     var lastRead by remember { mutableStateOf("") }
