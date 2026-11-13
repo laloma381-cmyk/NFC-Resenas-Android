@@ -150,6 +150,20 @@ fun BusinessFormScreen(
                 shape = RoundedCornerShape(16.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next)
             )
+            OutlinedButton(
+                onClick = { logoPicker.launch(arrayOf("image/*")) },
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(if (logoUri.isBlank()) "Añadir logotipo del negocio" else "Cambiar logotipo")
+            }
+            if (logoUri.isNotBlank()) {
+                Text(
+                    "Logotipo seleccionado: se incluirá en el diseño del QR.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -170,7 +184,8 @@ fun BusinessFormScreen(
                             address = address.trim(),
                             googleReviewUrl = normalizedUrl,
                             phone = phone.trim(),
-                            email = email.trim()
+                            email = email.trim(),
+                            logoUri = logoUri
                         ) ?: Business(
                             name = name.trim(),
                             category = category.trim(),
