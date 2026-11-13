@@ -16,5 +16,7 @@ data class Business(
     val email: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(defaultValue = "''")
-    val logoUri: String = ""
+    val logoUri: String = "",
+    @ColumnInfo(defaultValue = "'ocean'")
+    val qrPaletteId: String = "ocean"
 )
