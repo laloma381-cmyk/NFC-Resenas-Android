@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -54,7 +55,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import com.nfcresenas.app.R
 import com.nfcresenas.app.data.Business
 import com.nfcresenas.app.ui.QRCodeGenerator
 import com.nfcresenas.app.ui.QrPalette
@@ -90,8 +90,17 @@ fun BusinessDetailScreen(
             if (business.phone.isNotBlank()) appendLine("Teléfono: ${business.phone}")
             if (business.email.isNotBlank()) appendLine("Correo: ${business.email}")
             if (business.googleReviewUrl.isNotBlank()) appendLine("Deja tu reseña: ${business.googleReviewUrl}")
+            if (business.instagramUrl.isNotBlank()) appendLine("Instagram: ${business.instagramUrl}")
+            if (business.facebookUrl.isNotBlank()) appendLine("Facebook: ${business.facebookUrl}")
             appendLine()
             append(reviewMessage)
+        }
+    }
+    val openExternalLink: (String) -> Unit = { url ->
+        try {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (_: Exception) {
+            Toast.makeText(context, "No se pudo abrir el enlace", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -199,17 +208,30 @@ fun BusinessDetailScreen(
                     shape = RoundedCornerShape(16.dp)
                 ) { Text("Compartir datos", fontWeight = FontWeight.SemiBold) }
                 OutlinedButton(
-                    onClick = {
-                        try {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(business.googleReviewUrl)))
-                        } catch (_: Exception) {
-                            Toast.makeText(context, "No se pudo abrir el enlace", Toast.LENGTH_SHORT).show()
-                        }
-                    },
+                    onClick = { openExternalLink(business.googleReviewUrl) },
                     enabled = business.googleReviewUrl.isNotBlank(),
                     modifier = Modifier.weight(1f).heightIn(min = 54.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) { Text("Abrir reseñas", fontWeight = FontWeight.SemiBold) }
+            }
+
+            if (business.instagramUrl.isNotBlank() || business.facebookUrl.isNotBlank()) {
+                InfoCard(title = "Redes sociales") {
+                    if (business.instagramUrl.isNotBlank()) {
+                        OutlinedButton(
+                            onClick = { openExternalLink(business.instagramUrl) },
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
+                            shape = RoundedCornerShape(14.dp)
+                        ) { Text("◎  Abrir Instagram", fontWeight = FontWeight.SemiBold) }
+                    }
+                    if (business.facebookUrl.isNotBlank()) {
+                        OutlinedButton(
+                            onClick = { openExternalLink(business.facebookUrl) },
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
+                            shape = RoundedCornerShape(14.dp)
+                        ) { Text("f  Abrir Facebook", fontWeight = FontWeight.SemiBold) }
+                    }
+                }
             }
 
             InfoCard(title = "Información del negocio") {
@@ -217,6 +239,8 @@ fun BusinessDetailScreen(
                 InfoRow("Dirección", business.address.ifBlank { "Sin dirección" })
                 InfoRow("Teléfono", business.phone.ifBlank { "Sin teléfono" })
                 InfoRow("Correo", business.email.ifBlank { "Sin correo" })
+                if (business.instagramUrl.isNotBlank()) InfoRow("Instagram", business.instagramUrl)
+                if (business.facebookUrl.isNotBlank()) InfoRow("Facebook", business.facebookUrl)
             }
 
             InfoCard(title = "Mensaje sugerido") {
