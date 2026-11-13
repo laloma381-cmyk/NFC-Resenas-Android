@@ -97,12 +97,12 @@ fun NfcToolsScreen(onBack: () -> Unit) {
                     onSuccess = { it },
                     onFailure = { "No se pudo procesar la etiqueta: ${it.message ?: "error NFC"}" }
                 )
-                if (currentWriteMode.value && message.startsWith("¡Tarjeta")) {
+                if (currentWriteMode.value) {
                     status = message
                     lastRead = ""
                 } else {
                     lastRead = message
-                    status = "Lectura completada."
+                    status = if (message.startsWith("No se pudo")) message else "Lectura completada."
                 }
             }
             adapter.enableReaderMode(
