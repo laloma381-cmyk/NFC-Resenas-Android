@@ -79,7 +79,8 @@ class MainActivity : ComponentActivity() {
                         onDelete = {
                             viewModel.deleteBusiness(selectedBusiness!!)
                             selectedBusiness = null
-                        }
+                        },
+                        onUpdateBusiness = { viewModel.updateBusiness(it) }
                     )
                 } else if (showBusinesses) {
                     BusinessListScreen(
