@@ -131,5 +131,5 @@ object QRCodeGenerator {
     }
 
     fun buildReviewMessage(name: String): String =
-        "Hola, nos gustaría conocer tu experiencia en $name. Si te ha parecido buena, te agradeceríamos mucho que dejaras una reseña honesta."
+        "Hola, nos gustaría conocer tu experiencia en $name. Comparte una reseña honesta, tanto si ha sido positiva como si hay algo que podamos mejorar."
 }
