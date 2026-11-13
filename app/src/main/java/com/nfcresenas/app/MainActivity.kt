@@ -7,12 +7,18 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import com.nfcresenas.app.data.Business
 import com.nfcresenas.app.data.BusinessRepository
@@ -113,11 +119,25 @@ private fun SplashScreen(onSplashFinished: () -> Unit) {
         modifier = Modifier.fillMaxSize().background(Color(0xFF101B36)),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.splash_nfc_resenas),
-            contentDescription = "ReviewQR Manager",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_app_icon),
+                contentDescription = "Logotipo de ReviewQR Manager",
+                modifier = Modifier.size(210.dp),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(Modifier.height(18.dp))
+            androidx.compose.material3.Text(
+                "ReviewQR Manager",
+                color = Color.White,
+                fontWeight = FontWeight.ExtraBold,
+                style = androidx.compose.material3.MaterialTheme.typography.headlineSmall
+            )
+            androidx.compose.material3.Text(
+                "QR · NFC · Negocios",
+                color = Color(0xFFFFC45B),
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
