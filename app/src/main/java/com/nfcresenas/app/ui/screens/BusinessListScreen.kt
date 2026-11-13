@@ -30,8 +30,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,15 +43,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.nfcresenas.app.data.Business
 
-private val BrandBlue = Color(0xFF0A5EDB)
-private val PageBackground = Color(0xFFF3F7FD)
-private val MutedText = Color(0xFF66758A)
+private val BrandBlue = Color(0xFF245BDB)
+private val DeepBlue = Color(0xFF142B62)
+private val PageBackground = Color(0xFFF4F6FB)
+private val MutedText = Color(0xFF718096)
+private val Success = Color(0xFF16845B)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,10 +80,20 @@ fun BusinessListScreen(
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Icon(Icons.Default.Storefront, contentDescription = null, tint = BrandBlue)
-                        Text("NFC Reseñas", fontWeight = FontWeight.Bold)
+                        Box(
+                            modifier = Modifier.size(38.dp).clip(RoundedCornerShape(12.dp))
+                                .background(BrandBlue),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.Default.Storefront, contentDescription = null, tint = Color.White)
+                        }
+                        Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
+                            Text("ReviewQR Manager", fontWeight = FontWeight.ExtraBold, color = DeepBlue)
+                            Text("Panel de negocios", style = MaterialTheme.typography.labelSmall, color = MutedText)
+                        }
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = PageBackground)
             )
         },
         floatingActionButton = {
@@ -94,27 +109,49 @@ fun BusinessListScreen(
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(paddingValues),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 20.dp, top = 12.dp, end = 20.dp, bottom = 100.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 18.dp, top = 10.dp, end = 18.dp, bottom = 110.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             item {
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("GESTIÓN DE NEGOCIOS", style = MaterialTheme.typography.labelLarge, color = BrandBlue, fontWeight = FontWeight.Bold)
-                    Text("Tus negocios", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-                    Text(
-                        if (businesses.size == 1) "1 negocio listo para recibir reseñas" else "${businesses.size} negocios listos para recibir reseñas",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MutedText
-                    )
-                    Spacer(Modifier.height(6.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .clip(RoundedCornerShape(26.dp))
+                            .background(Brush.linearGradient(listOf(BrandBlue, DeepBlue)))
+                            .padding(20.dp)
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                            Surface(color = Color.White.copy(alpha = 0.16f), shape = RoundedCornerShape(50)) {
+                                Text("TU NEGOCIO, MÁS VISIBLE", modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
+                                    color = Color.White, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                            }
+                            Text("Gestiona tus reseñas
+con un solo toque", style = MaterialTheme.typography.headlineSmall,
+                                color = Color.White, fontWeight = FontWeight.ExtraBold)
+                            Text("Prepara códigos QR personalizados y compártelos fácilmente con tus clientes.",
+                                style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.88f))
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Surface(color = Color.White.copy(alpha = 0.16f), shape = RoundedCornerShape(12.dp)) {
+                                    Text("${businesses.size} negocios", modifier = Modifier.padding(horizontal = 11.dp, vertical = 7.dp),
+                                        color = Color.White, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                                }
+                                Surface(color = Color.White.copy(alpha = 0.16f), shape = RoundedCornerShape(12.dp)) {
+                                    Text("${businesses.count { it.googleReviewUrl.isNotBlank() }} con enlace QR",
+                                        modifier = Modifier.padding(horizontal = 11.dp, vertical = 7.dp),
+                                        color = Color.White, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                                }
+                            }
+                        }
+                    }
+                    Text("Tus negocios", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold, color = DeepBlue)
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        shape = RoundedCornerShape(16.dp),
-                        placeholder = { Text("Buscar por nombre o categoría") },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                        shape = RoundedCornerShape(17.dp),
+                        placeholder = { Text("Buscar negocio, categoría o dirección") },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = BrandBlue) },
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
                                 IconButton(onClick = { searchQuery = "" }) {
@@ -129,7 +166,7 @@ fun BusinessListScreen(
             if (filteredBusinesses.isEmpty()) {
                 item {
                     Card(
-                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                         shape = RoundedCornerShape(24.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White)
                     ) {
@@ -138,16 +175,18 @@ fun BusinessListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Icon(Icons.Default.Storefront, contentDescription = null, tint = BrandBlue, modifier = Modifier.size(42.dp))
+                            Box(modifier = Modifier.size(64.dp).clip(CircleShape).background(Color(0xFFEAF0FF)),
+                                contentAlignment = Alignment.Center) {
+                                Icon(Icons.Default.Storefront, contentDescription = null, tint = BrandBlue, modifier = Modifier.size(30.dp))
+                            }
                             Text(
-                                if (businesses.isEmpty()) "Empieza con tu primer negocio" else "No hay resultados",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
+                                if (businesses.isEmpty()) "Tu primer negocio empieza aquí" else "No encontramos resultados",
+                                style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = DeepBlue
                             )
                             Text(
-                                if (businesses.isEmpty()) "Guarda los datos y el enlace de reseñas para crear un QR que puedas compartir." else "Prueba con otro nombre o categoría.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MutedText
+                                if (businesses.isEmpty()) "Añade un negocio para crear su QR de reseñas y preparar el material para compartir."
+                                else "Prueba con otro nombre, categoría o dirección.",
+                                style = MaterialTheme.typography.bodyMedium, color = MutedText
                             )
                         }
                     }
@@ -165,34 +204,41 @@ fun BusinessListScreen(
 private fun BusinessCard(business: Business, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
+            horizontalArrangement = Arrangement.spacedBy(13.dp)
         ) {
             Box(
-                modifier = Modifier.size(54.dp).clip(CircleShape).background(Color(0xFFE7F0FF)),
+                modifier = Modifier.size(54.dp).clip(RoundedCornerShape(17.dp)).background(Color(0xFFEAF0FF)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = business.name.trim().take(1).uppercase().ifBlank { "N" },
-                    color = BrandBlue,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    color = BrandBlue, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold
                 )
             }
-            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(business.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(business.category.ifBlank { "Sin categoría" }, style = MaterialTheme.typography.bodyMedium, color = MutedText, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(
-                    if (business.googleReviewUrl.isBlank()) "Añade el enlace de reseñas" else "Enlace de reseñas configurado",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (business.googleReviewUrl.isBlank()) MutedText else Color(0xFF16834A)
-                )
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Text(business.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+                    color = DeepBlue, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(business.category.ifBlank { "Sin categoría" }, style = MaterialTheme.typography.bodySmall,
+                    color = MutedText, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Surface(
+                    color = if (business.googleReviewUrl.isBlank()) Color(0xFFFFF4E5) else Color(0xFFE8F6EF),
+                    shape = RoundedCornerShape(50)
+                ) {
+                    Text(
+                        if (business.googleReviewUrl.isBlank()) "Falta enlace de reseñas" else "QR listo para diseñar",
+                        modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (business.googleReviewUrl.isBlank()) Color(0xFF9A5B12) else Success,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
             Text("›", style = MaterialTheme.typography.headlineMedium, color = MutedText)
         }
