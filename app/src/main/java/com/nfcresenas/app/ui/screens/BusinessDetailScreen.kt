@@ -2,6 +2,9 @@ package com.nfcresenas.app.ui.screens
 
 import android.content.ClipData
 import android.content.Intent
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -177,7 +180,40 @@ fun BusinessDetailScreen(
                         ) {
                             Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.size(8.dp))
-                            Text("Compartir QR diseñado", fontWeight = FontWeight.Bold)
+                            Text("Compartir QR en PNG", fontWeight = FontWeight.Bold)
+                        }
+                        OutlinedButton(
+                            onClick = {
+                                val document = PdfDocument()
+                                try {
+                                    val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+                                    val page = document.startPage(pageInfo)
+                                    val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+                                    page.canvas.drawColor(android.graphics.Color.WHITE)
+                                    page.canvas.drawBitmap(designedQr, null, RectF(28f, 55f, 567f, 729f), paint)
+                                    document.finishPage(page)
+                                    val directory = File(context.cacheDir, "shared_qr").apply { mkdirs() }
+                                    val safeName = business.name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').ifBlank { "negocio" }
+                                    val pdfFile = File(directory, "qr-resenas-$safeName.pdf")
+                                    pdfFile.outputStream().use { output -> document.writeTo(output) }
+                                    val pdfUri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", pdfFile)
+                                    val intent = Intent(Intent.ACTION_SEND).apply {
+                                        type = "application/pdf"
+                                        putExtra(Intent.EXTRA_STREAM, pdfUri)
+                                        putExtra(Intent.EXTRA_TEXT, "Código QR de reseñas de ${business.name}")
+                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    }
+                                    context.startActivity(Intent.createChooser(intent, "Compartir QR en PDF"))
+                                } catch (_: Exception) {
+                                    Toast.makeText(context, "No se pudo generar el PDF", Toast.LENGTH_LONG).show()
+                                } finally {
+                                    document.close()
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Text("Exportar también en PDF", fontWeight = FontWeight.SemiBold)
                         }
                     } else {
                         Text("Añade un enlace válido para crear tu QR personalizado.", color = Muted)
