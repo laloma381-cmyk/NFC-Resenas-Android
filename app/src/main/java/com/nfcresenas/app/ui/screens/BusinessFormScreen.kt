@@ -237,6 +237,10 @@ private fun normalizeSocialUrl(rawValue: String, domain: String): String {
     val value = rawValue.trim()
     if (value.isBlank()) return ""
     if (value.startsWith("https://", ignoreCase = true) || value.startsWith("http://", ignoreCase = true)) return value
+    if (value.startsWith("//")) return "https:$value"
+    if (value.startsWith(domain, ignoreCase = true) || value.startsWith("www.$domain", ignoreCase = true)) {
+        return "https://$value"
+    }
     val username = value.removePrefix("@").trim().trim('/')
     return if (username.isBlank()) "" else "https://$domain/$username"
 }
