@@ -160,7 +160,7 @@ fun NfcToolsScreen(onBack: () -> Unit) {
                 onValueChange = { url = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Enlace que quieres guardar") },
-                placeholder = { Text("https://t negocio.com/resenas") },
+                placeholder = { Text("https://tu-negocio.com/resenas") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                 singleLine = true,
                 shape = RoundedCornerShape(16.dp),
