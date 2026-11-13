@@ -2,6 +2,7 @@ package com.nfcresenas.app.ui.screens
 
 import android.content.ClipData
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.pdf.PdfDocument
