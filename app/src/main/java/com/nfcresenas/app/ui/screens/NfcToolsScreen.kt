@@ -1,6 +1,7 @@
 package com.nfcresenas.app.ui.screens
 
 import android.app.Activity
+import android.content.Intent
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
@@ -174,6 +175,13 @@ fun NfcToolsScreen(onBack: () -> Unit) {
                         Spacer(Modifier.height(4.dp))
                         Text("Contenido leído", fontWeight = FontWeight.Bold)
                         Text(lastRead, style = MaterialTheme.typography.bodyMedium)
+                        if (lastRead.startsWith("https://") || lastRead.startsWith("http://")) {
+                            Button(onClick = {
+                                runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(lastRead))) }
+                            }) {
+                                Text("Abrir enlace leído")
+                            }
+                        }
                     }
                 }
             }
