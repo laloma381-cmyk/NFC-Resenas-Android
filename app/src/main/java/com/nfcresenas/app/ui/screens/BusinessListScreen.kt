@@ -1,5 +1,8 @@
 package com.nfcresenas.app.ui.screens
 
+import android.content.Intent
+import android.net.Uri
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +23,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Storefront
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,10 +37,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.ui.platform.LocalContext
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +78,21 @@ fun BusinessListScreen(
     onSelectBusiness: (Business) -> Unit
 ) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
+    var scannedValue by rememberSaveable { mutableStateOf<String?>(null) }
+    val context = LocalContext.current
+    val qrScanner = rememberLauncherForActivityResult(ScanContract()) { result ->
+        val contents = result.contents?.trim()
+        if (!contents.isNullOrBlank()) {
+            val uri = runCatching { Uri.parse(contents) }.getOrNull()
+            if (uri != null && (uri.scheme.equals("https", true) || uri.scheme.equals("http", true)) && !uri.host.isNullOrBlank()) {
+                runCatching {
+                    context.startActivity(Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                }.onFailure { scannedValue = contents }
+            } else {
+                scannedValue = contents
+            }
+        }
+    }
     val filteredBusinesses = remember(businesses, searchQuery) {
         val query = searchQuery.trim()
         if (query.isBlank()) businesses
@@ -72,6 +101,17 @@ fun BusinessListScreen(
                 it.category.contains(query, ignoreCase = true) ||
                 it.address.contains(query, ignoreCase = true)
         }
+    }
+
+    if (scannedValue != null) {
+        AlertDialog(
+            onDismissRequest = { scannedValue = null },
+            title = { Text("Contenido del código QR") },
+            text = { Text(scannedValue.orEmpty()) },
+            confirmButton = {
+                TextButton(onClick = { scannedValue = null }) { Text("Cerrar") }
+            }
+        )
     }
 
     Scaffold(
@@ -141,6 +181,22 @@ fun BusinessListScreen(
                                 }
                             }
                         }
+                    }
+                    Button(
+                        onClick = {
+                            qrScanner.launch(
+                                ScanOptions()
+                                    .setPrompt("Enfoca el código QR dentro del recuadro")
+                                    .setBeepEnabled(false)
+                                    .setOrientationLocked(false)
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Icon(Icons.Default.QrCodeScanner, contentDescription = null)
+                        Spacer(Modifier.size(8.dp))
+                        Text("Escanear QR")
                     }
                     Text("Tus negocios", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold, color = DeepBlue)
                     OutlinedTextField(
