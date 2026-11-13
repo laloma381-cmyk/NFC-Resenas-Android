@@ -7,13 +7,20 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.nfcresenas.app.data.Business
 import com.nfcresenas.app.data.BusinessRepository
 import com.nfcresenas.app.ui.BusinessViewModel
@@ -22,6 +29,8 @@ import com.nfcresenas.app.ui.screens.BusinessDetailScreen
 import com.nfcresenas.app.ui.screens.BusinessFormScreen
 import com.nfcresenas.app.ui.screens.BusinessListScreen
 import com.nfcresenas.app.ui.theme.NFCResenasTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
@@ -98,14 +107,34 @@ private fun SplashScreen(onSplashFinished: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Color(0xFF071426)),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.splash_nfc_resenas),
-            contentDescription = "Logo NFC Reseñas",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.splash_nfc_resenas),
+                contentDescription = "Imagen de NFC y reseñas",
+                modifier = Modifier
+                    .fillMaxWidth(0.82f)
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(modifier = Modifier.height(18.dp))
+            Text(
+                text = "ReviewQR Manager",
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.ExtraBold
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = "Gestiona tus códigos QR y reseñas",
+                color = Color(0xFFB9C8DC),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
