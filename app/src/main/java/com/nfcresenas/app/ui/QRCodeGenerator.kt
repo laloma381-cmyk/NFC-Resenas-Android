@@ -66,7 +66,7 @@ object QRCodeGenerator {
             canvas.drawText(businessName, posterWidth / 2f, 348f, paint)
             paint.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
             paint.textSize = 30f
-            canvas.drawText("ESCANEA Y DEJA TU RESEÑA", posterWidth / 2f, 410f, paint)
+            canvas.drawText("ESCANEA Y VISITA NUESTROS ENLACES", posterWidth / 2f, 410f, paint)
 
             val qrSize = 780f
             val qrLeft = (posterWidth - qrSize) / 2f

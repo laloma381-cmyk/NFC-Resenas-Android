@@ -1,0 +1,36 @@
+name: Publicar página de enlaces QR
+
+on:
+  push:
+    branches:
+      - feature/social-links
+    paths:
+      - "docs/**"
+      - ".github/workflows/publicar-pagina-social.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+      - name: Preparar artefacto de GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - name: Publicar página
+        id: deployment
+        uses: actions/deploy-pages@v4

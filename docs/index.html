@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a5edb">
+  <title>Enlaces del negocio</title>
+  <style>
+    :root { color-scheme: light; --blue:#0a5edb; --ink:#10243a; --muted:#66758a; --bg:#f3f7fd; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:28px 16px; display:grid; place-items:center; background:linear-gradient(145deg,#e8f1ff,var(--bg) 55%,#eef8f2); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
+    main { width:min(100%,440px); background:#fff; border-radius:28px; padding:30px 22px; box-shadow:0 18px 55px rgba(16,36,58,.12); text-align:center; }
+    .mark { width:58px;height:58px;border-radius:18px;background:var(--blue);color:#fff;display:grid;place-items:center;margin:0 auto 18px;font-size:26px;font-weight:800; }
+    h1 { font-size:27px;line-height:1.15;margin:0 0 8px;overflow-wrap:anywhere; }
+    #category { color:var(--muted);margin:0 0 24px; }
+    .links { display:grid;gap:12px;margin-top:18px; }
+    a.action { display:flex;align-items:center;justify-content:center;min-height:56px;padding:14px 18px;border-radius:16px;text-decoration:none;font-weight:700;border:1px solid #e4eaf2;color:var(--ink);background:#fff; }
+    a.primary { background:var(--blue);border-color:var(--blue);color:#fff; }
+    a[hidden], p[hidden] { display:none; }
+    .details { margin-top:22px;padding-top:18px;border-top:1px solid #edf0f5;color:var(--muted);font-size:14px;line-height:1.5;overflow-wrap:anywhere; }
+    .details p { margin:5px 0; }
+    footer { margin-top:22px;color:#8a96a7;font-size:12px; }
+    #missing { color:#a33; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="mark" aria-hidden="true">R</div>
+    <h1 id="business">Enlaces del negocio</h1>
+    <p id="category"></p>
+    <p id="missing" hidden>No se han recibido los datos del negocio. Pide un nuevo código QR.</p>
+    <nav class="links" aria-label="Enlaces del negocio">
+      <a id="review" class="action primary" hidden target="_blank" rel="noopener noreferrer">★ Dejar una reseña en Google</a>
+      <a id="instagram" class="action" hidden target="_blank" rel="noopener noreferrer">◎ Ver Instagram</a>
+      <a id="facebook" class="action" hidden target="_blank" rel="noopener noreferrer">f Ver Facebook</a>
+    </nav>
+    <section class="details">
+      <p id="address" hidden></p>
+      <p id="phone" hidden></p>
+    </section>
+    <footer>Gracias por visitar este negocio</footer>
+  </main>
+  <script>
+    (() => {
+      const params = new URLSearchParams(location.search);
+      const get = (key) => (params.get(key) || "").trim();
+      const safeLink = (raw, hosts) => {
+        try {
+          const url = new URL(raw);
+          return url.protocol === "https:" && hosts.includes(url.hostname.toLowerCase()) ? url.href : "";
+        } catch (_) { return ""; }
+      };
+      const show = (id, value) => {
+        const el = document.getElementById(id);
+        if (value) { el.hidden = false; if (id === "address" || id === "phone") el.textContent = value; else el.href = value; }
+      };
+      const name = get("name");
+      document.getElementById("business").textContent = name || "Enlaces del negocio";
+      document.title = name ? name + " | Enlaces" : "Enlaces del negocio";
+      document.getElementById("category").textContent = get("category");
+      const review = safeLink(get("review"), ["g.page","google.com","www.google.com","search.google.com","maps.google.com","maps.app.goo.gl"]);
+      const instagram = safeLink(get("instagram"), ["instagram.com","www.instagram.com"]);
+      const facebook = safeLink(get("facebook"), ["facebook.com","www.facebook.com","m.facebook.com"]);
+      show("review", review);
+      show("instagram", instagram);
+      show("facebook", facebook);
+      show("address", get("address"));
+      show("phone", get("phone"));
+      if (!name || (!review && !instagram && !facebook)) document.getElementById("missing").hidden = false;
+    })();
+  </script>
+</body>
+</html>
