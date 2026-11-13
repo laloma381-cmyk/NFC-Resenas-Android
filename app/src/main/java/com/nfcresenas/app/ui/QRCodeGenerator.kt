@@ -55,7 +55,7 @@ object QRCodeGenerator {
             paint.typeface = Typeface.create("sans-serif", Typeface.BOLD)
             paint.textAlign = Paint.Align.CENTER
             paint.textSize = 42f
-            canvas.drawText("NFC RESEÑAS", posterWidth / 2f, 132f, paint)
+            canvas.drawText("REVIEWQR MANAGER", posterWidth / 2f, 132f, paint)
             paint.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
             paint.textSize = 27f
             canvas.drawText("Una opinión puede hacer la diferencia", posterWidth / 2f, 190f, paint)
@@ -131,5 +131,5 @@ object QRCodeGenerator {
     }
 
     fun buildReviewMessage(name: String): String =
-        "Hola, nos gustaría conocer tu experiencia en $name. Si te ha parecido buena, te agradeceríamos mucho que dejaras una reseña honesta."
+        "Hola, nos gustaría conocer tu experiencia en $name. Comparte una reseña honesta: nos ayuda tanto lo que ha ido bien como aquello que podemos mejorar."
 }
