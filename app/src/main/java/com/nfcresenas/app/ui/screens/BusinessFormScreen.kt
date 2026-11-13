@@ -192,7 +192,8 @@ fun BusinessFormScreen(
                             address = address.trim(),
                             googleReviewUrl = normalizedUrl,
                             phone = phone.trim(),
-                            email = email.trim()
+                            email = email.trim(),
+                            logoUri = logoUri
                         )
                         onSave(saved)
                     }
