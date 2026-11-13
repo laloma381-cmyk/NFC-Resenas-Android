@@ -3,6 +3,7 @@ package com.nfcresenas.app.ui
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Typeface
 import com.google.zxing.BarcodeFormat
@@ -33,7 +34,7 @@ object QRCodeGenerator {
         createQrBitmap(content, size, android.graphics.Color.BLACK)
 
     /** Creates a branded poster containing a high-contrast, scannable QR code. */
-    fun generateDesignedQrBitmap(content: String, businessName: String, palette: QrPalette): Bitmap? {
+    fun generateDesignedQrBitmap(content: String, businessName: String, palette: QrPalette, logo: Bitmap? = null): Bitmap? {
         if (content.isBlank()) return null
         return try {
             val posterWidth = 1080
@@ -50,6 +51,23 @@ object QRCodeGenerator {
             paint.color = palette.primary
             canvas.drawRoundRect(RectF(44f, 44f, 1036f, 270f), 52f, 52f, paint)
             canvas.drawRect(44f, 210f, 1036f, 270f, paint)
+
+            paint.color = android.graphics.Color.WHITE
+            canvas.drawCircle(160f, 157f, 66f, paint)
+            if (logo != null) {
+                val logoBounds = RectF(105f, 102f, 215f, 212f)
+                val logoClip = Path().apply { addCircle(160f, 157f, 55f, Path.Direction.CW) }
+                canvas.save()
+                canvas.clipPath(logoClip)
+                canvas.drawBitmap(logo, null, logoBounds, Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG))
+                canvas.restore()
+            } else {
+                paint.color = palette.primary
+                paint.textAlign = Paint.Align.CENTER
+                paint.typeface = Typeface.create("sans-serif-black", Typeface.BOLD)
+                paint.textSize = 68f
+                canvas.drawText("R", 160f, 181f, paint)
+            }
 
             paint.color = android.graphics.Color.WHITE
             paint.typeface = Typeface.create("sans-serif", Typeface.BOLD)
