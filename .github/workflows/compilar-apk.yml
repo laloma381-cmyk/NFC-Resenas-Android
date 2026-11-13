@@ -1,10 +1,11 @@
-name: Compilar APK de prueba
+name: Compilar ReviewQR Manager
 
 on:
   workflow_dispatch:
   push:
     branches:
       - feature/android-mvp
+      - feature/reviewqr-full-suite
 
 jobs:
   compilar:
