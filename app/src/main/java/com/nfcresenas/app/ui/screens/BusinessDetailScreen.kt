@@ -77,10 +77,11 @@ fun BusinessDetailScreen(
     business: Business,
     onBack: () -> Unit,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onUpdateBusiness: (Business) -> Unit
 ) {
     val context = LocalContext.current
-    var selectedPaletteId by rememberSaveable(business.id) { mutableStateOf(QRCodeGenerator.palettes.first().id) }
+    var selectedPaletteId by rememberSaveable(business.id) { mutableStateOf(business.qrPaletteId) }
     val palette = QRCodeGenerator.palettes.firstOrNull { it.id == selectedPaletteId } ?: QRCodeGenerator.palettes.first()
     val designedQr = remember(business.googleReviewUrl, business.name, palette.id) {
         business.googleReviewUrl.takeIf(String::isNotBlank)?.let {
@@ -146,6 +147,7 @@ fun BusinessDetailScreen(
                         QRCodeGenerator.palettes.forEach { option ->
                             PaletteChip(option, selected = option.id == palette.id) {
                                 selectedPaletteId = option.id
+                                onUpdateBusiness(business.copy(qrPaletteId = option.id))
                             }
                         }
                     }
