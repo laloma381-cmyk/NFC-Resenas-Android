@@ -1,6 +1,9 @@
 package com.nfcresenas.app.ui.screens
 
+import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +52,14 @@ fun BusinessFormScreen(
     var reviewUrl by rememberSaveable(business?.id) { mutableStateOf(business?.googleReviewUrl.orEmpty()) }
     var phone by rememberSaveable(business?.id) { mutableStateOf(business?.phone.orEmpty()) }
     var email by rememberSaveable(business?.id) { mutableStateOf(business?.email.orEmpty()) }
+    var logoUri by rememberSaveable(business?.id) { mutableStateOf(business?.logoUri.orEmpty()) }
+    val context = LocalContext.current
+    val logoPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            runCatching { context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+            logoUri = uri.toString()
+        }
+    }
     var attemptedSave by rememberSaveable(business?.id) { mutableStateOf(false) }
 
     val normalizedUrl = remember(reviewUrl) {
