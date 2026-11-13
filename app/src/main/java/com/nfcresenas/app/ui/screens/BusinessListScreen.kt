@@ -125,8 +125,7 @@ fun BusinessListScreen(
                                 Text("TU NEGOCIO, MÁS VISIBLE", modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
                                     color = Color.White, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                             }
-                            Text("Gestiona tus reseñas
-con un solo toque", style = MaterialTheme.typography.headlineSmall,
+                            Text("Gestiona tus reseñas\ncon un solo toque", style = MaterialTheme.typography.headlineSmall,
                                 color = Color.White, fontWeight = FontWeight.ExtraBold)
                             Text("Prepara códigos QR personalizados y compártelos fácilmente con tus clientes.",
                                 style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.88f))
