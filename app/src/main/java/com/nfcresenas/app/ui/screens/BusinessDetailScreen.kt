@@ -78,7 +78,8 @@ fun BusinessDetailScreen(
     onBack: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
-    onUpdateBusiness: (Business) -> Unit
+    onUpdateBusiness: (Business) -> Unit,
+    onProgramNfc: (String) -> Unit
 ) {
     val context = LocalContext.current
     var selectedPaletteId by rememberSaveable(business.id) { mutableStateOf(business.qrPaletteId) }
@@ -229,6 +230,15 @@ fun BusinessDetailScreen(
                         Text("Añade un enlace válido para crear tu QR personalizado.", color = Muted)
                     }
                 }
+            }
+
+            Button(
+                onClick = { onProgramNfc(business.googleReviewUrl) },
+                enabled = business.googleReviewUrl.isNotBlank(),
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Programar tarjeta NFC con este enlace", fontWeight = FontWeight.Bold)
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
