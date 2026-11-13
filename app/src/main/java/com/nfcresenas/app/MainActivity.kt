@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                 if (showSplash) {
                     SplashScreen { showSplash = false }
                 } else if (showNfcTools) {
-                    NfcToolsScreen(onBack = { showNfcTools = false })
+                    NfcToolsScreen(onBack = { showNfcTools = false; showHome = true })
                 } else if (showBusinesses && showForm) {
                     BusinessFormScreen(
                         business = selectedBusiness,
@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
                             showForm = true
                         },
                         onSelectBusiness = { selectedBusiness = it },
-                        onBack = { showBusinesses = false }
+                        onBack = { showBusinesses = false; showHome = true }
                     )
                 } else if (showHome) {
                     ToolsHomeScreen(
